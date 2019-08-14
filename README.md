@@ -1,3 +1,3 @@
-# Shannon_Game
+# Shannon Switching Game
 
-## Implementation of Shannon switching game.
+### Implementation of an algorithm to find two disjoint spanning tree.
