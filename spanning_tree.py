@@ -84,9 +84,6 @@ TEXT_DISTANCE_ERROR = 500
 
 vertexes = []
 
-# List of gui_vertexes to represent a graph.
-graph = []
-
 EDGE_START_POINT = 0
 EDGE_END_POINT = 1
 NOT_EDGE_ENDPOINT = -1
@@ -288,12 +285,10 @@ def change_button_text():
 # One all vertexes and edges are created, then all the connections
 # and the structure of the graph must be established by finding every
 # vertex's adjacent vertexes.
-def construct_graph():
-    graph.clear()
+def construct_graph(vertexes_list: List[Vertex]):
 
-    for vertex in vertexes:
+    for vertex in vertexes_list:
         vertex.neighbors = find_neighbors(vertex)
-        graph.append(vertex)
 
 
 # Connect the adjacent vertexes
@@ -453,7 +448,7 @@ def play(e):
     change_button_color(True)  # Animation effect.
 
     if not is_finished and vertex_num > 0:
-        construct_graph()
+        construct_graph(vertexes)
         initialize()
         is_finished = True
     else:
