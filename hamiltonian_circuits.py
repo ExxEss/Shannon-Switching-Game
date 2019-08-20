@@ -50,7 +50,7 @@ def create_vertexes():
             st.vertex_num += 1
 
 
-def create_vertex(pos_x, pos_y):
+def create_vertex(pos_x: int, pos_y: int) -> Vertex:
     circle = canvas.create_oval(pos_x - VERTEX_RADIUS,
                                 pos_y - VERTEX_RADIUS,
                                 pos_x + VERTEX_RADIUS,
@@ -86,7 +86,7 @@ def reorder_neighbors():
         vertex.neighbors = sorted(vertex.neighbors, key=lambda k: k[2])
 
 
-def get_angle(vec1, vec2):
+def get_angle(vec1: (int, int), vec2: (int, int)) -> float:
     dot = vec1[0] * vec2[0] + vec1[1] * vec2[1]
     det = vec1[0] * vec2[1] - vec1[1] * vec2[0]
 
@@ -96,18 +96,18 @@ def get_angle(vec1, vec2):
         return math.atan2(det, dot)
 
 
-def get_another_endpoint(edge, vertex) -> Vertex:
+def get_another_endpoint(edge: Edge, vertex: Vertex) -> Vertex:
     return edge.endpoints[0] if vertex != edge.endpoints[0] \
         else edge.endpoints[1]
 
 
-def draw_vertex_edges(vertexes_list):
+def draw_vertex_edges(vertexes_list: List[Vertex]):
     for i, vertex in enumerate(vertexes_list):
         thickening_edges.append(create_edge(
             vertex, vertexes_list[(i + 1) % len(vertexes_list)]))
 
 
-def draw_edge_edges(vertexes_list, edge):
+def draw_edge_edges(vertexes_list: List[Vertex], edge: Edge):
     for vertex1 in vertexes_list:
         for vertex2 in vertexes_list:
             if vertex1 != vertex2:
@@ -116,7 +116,7 @@ def draw_edge_edges(vertexes_list, edge):
                     thickening_edges.append(create_edge(vertex1, vertex2))
 
 
-def is_insulated(vertex1, vertex2, edge):
+def is_insulated(vertex1: Vertex, vertex2: Vertex, edge: Edge) -> bool:
     vertexes_list1 = edge.endpoints[0].associative_vertexes
     vertexes_list2 = edge.endpoints[1].associative_vertexes
 
@@ -129,7 +129,7 @@ def is_insulated(vertex1, vertex2, edge):
     return True
 
 
-def is_intersected(vertex1, vertex2, edge):
+def is_intersected(vertex1: Vertex, vertex2: Vertex, edge: Edge) -> bool:
     line1 = LineString([get_coord(vertex1), get_coord(vertex2)])
     line2 = LineString([get_coord(edge.endpoints[0]),
                         get_coord(edge.endpoints[1])])
@@ -137,7 +137,7 @@ def is_intersected(vertex1, vertex2, edge):
     return line1.intersects(line2)
 
 
-def create_edge(vertex1, vertex2):
+def create_edge(vertex1: Vertex, vertex2: Vertex) -> tk.BASELINE:
     coord1 = get_coord(vertex1)
     coord2 = get_coord(vertex2)
 
@@ -146,7 +146,7 @@ def create_edge(vertex1, vertex2):
                               fill=DARK_GRAY)
 
 
-def get_coord(vertex):
+def get_coord(vertex: Vertex) -> (int, int):
     coord = canvas.coords(vertex.circle)
 
     return (coord[0] + coord[2]) / 2, (coord[1] + coord[3]) / 2
@@ -164,5 +164,5 @@ def graph_thickening():
     lift(thickening_vertexes)
 
 
-def generate_hamiltonian_circuits():
+def hamiltonian_circuits():
     graph_thickening()

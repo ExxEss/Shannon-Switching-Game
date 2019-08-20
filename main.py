@@ -1,22 +1,24 @@
-import spanning_tree as st
 from spanning_tree import *
 import hamiltonian_circuits as hc
+
+is_finished = False
 
 
 # Start game after constructing graph.
 def play(e):
+    global is_finished
     add_edge(e)  # Create the ultimate edge with the last created line.
     change_button_color(True)  # Animation effect.
 
-    if not st.is_finished and st.vertex_num > 0:
+    if not is_finished and g.vertex_num > 0:
         construct_graph(vertexes)
         initialize()
-        st.is_finished = True
+        is_finished = True
         canvas.after(3 * ANIMATION_DURATION * (len(vertexes) + 1),
-                     (lambda: hc.generate_hamiltonian_circuits()))
+                     (lambda: hc.hamiltonian_circuits()))
     else:
         clear_canvas()  # For replaying.
-        st.is_finished = False
+        is_finished = False
 
 
 def bind():
