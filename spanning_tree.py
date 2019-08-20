@@ -2,7 +2,7 @@ import os
 import vlc
 import queue
 import tkinter as tk
-from typing import List, Tuple
+from typing import List
 
 # <------------------------------ Gui part 1 ------------------------------>
 
@@ -12,6 +12,7 @@ gui.title('Spanning Tree (ST)')
 gui.geometry('800x1000+320+0')
 
 GRAY = '#AAAAAA'
+DARK_GRAY = '#666666'
 JADE = '#5DE1C0'
 RED = '#A21E3F'
 BLUE = '#0099CC'
@@ -20,8 +21,6 @@ BLACK = '#000000'
 
 ANIMATION_DURATION = 2000
 SEPARATION_UNIT = 2
-
-event_msj = None
 
 canvas = tk.Canvas(gui, bg=DARK, width=600, height=600,
                    highlightthickness=0, relief='ridge')
@@ -89,20 +88,6 @@ EDGE_END_POINT = 1
 NOT_EDGE_ENDPOINT = -1
 
 
-def main_workflow():
-    canvas.bind('<Button-1>', click)
-    canvas.bind('<Double-1>', create_vertex)
-    canvas.bind('<B1-Motion>', drag)
-    canvas.bind('<ButtonRelease-1>', add_edge)
-    canvas.tag_bind(button_play, '<Button-1>', play)
-    canvas.tag_bind(button_text, '<Button-1>', play)
-    gui.bind('<Delete>', undo)
-    gui.bind('<Shift_L>', adjust_text_pos)
-    gui.bind('<Configure>', resize_bg)
-
-    gui.mainloop()
-
-
 # <------------------------------ Gui part 2 ------------------------------>
 
 class Vertex:
@@ -112,6 +97,7 @@ class Vertex:
         self.circle = circle
         self.text = text
         self.neighbors = []
+        self.associative_vertexes = []  # For graph thickness.
 
 
 class Edge:
@@ -119,6 +105,7 @@ class Edge:
     def __init__(self, line):
         self.line = line
         self.endpoints = []
+        self.associative_vertexes = []  # For graph thickness.
 
     def print(self):
         if self.endpoints:
@@ -171,7 +158,7 @@ def drag(e):
     is_new_edge_created = True
 
     # Put gui_vertexes on top layer
-    lift()
+    lift(vertexes)
 
 
 # For showing name(text) of each vertex more beautifully,
@@ -193,8 +180,8 @@ def adjust_text_pos(_):
 
 # Make sure that texts and circles always are drawn on top layer
 # compare to line.
-def lift():
-    for vertex in vertexes:
+def lift(vertexes_list):
+    for vertex in vertexes_list:
         canvas.tag_raise(vertex.circle)
         canvas.tag_raise(vertex.text)
 
@@ -223,10 +210,10 @@ def create_vertex(e):
                                     outline=GRAY,
                                     width=2)
 
-        text = canvas.create_text(e.x + 15, e.y - 15,
+        text = canvas.create_text(e.x, e.y,
                                   fill=GRAY,
-                                  font='Times 13 italic bold',
-                                  text=('V%d' % vertex_num))
+                                  font='Times 8 italic bold',
+                                  text=('%d' % vertex_num))
         play_sound()
 
         new_vertex = Vertex(vertex_num, circle, text)
@@ -286,13 +273,12 @@ def change_button_text():
 # and the structure of the graph must be established by finding every
 # vertex's adjacent vertexes.
 def construct_graph(vertexes_list: List[Vertex]):
-
     for vertex in vertexes_list:
         vertex.neighbors = find_neighbors(vertex)
 
 
 # Connect the adjacent vertexes
-def find_neighbors(vertex: Vertex) -> List[Tuple[Vertex, Edge]]:
+def find_neighbors(vertex: Vertex) -> List[List]:
     neighbors = []
 
     for edge in edges:
@@ -303,7 +289,7 @@ def find_neighbors(vertex: Vertex) -> List[Tuple[Vertex, Edge]]:
         else:
             continue
 
-        neighbors.append((neighbor_vertex, edge))
+        neighbors.append([neighbor_vertex, edge])
         edge.endpoints.append(vertex)
 
     return neighbors
@@ -394,7 +380,7 @@ is_finished = False
 # Using simplified Prim algorithm to generate an arbitrary spanning tree
 # which is represented by tree_vertexes and tree_edges
 def get_spanning_tree():
-    global last_redrawn_edge, event_msj
+    global last_redrawn_edge
 
     first_tree_vertexes.append(vertexes[0])
 
@@ -441,21 +427,6 @@ def redraw_edge(edges_list: list, color: str):
         last_redrawn_edge = None
 
 
-# Start game after constructing graph.
-def play(e):
-    global is_finished
-    add_edge(e)  # Create the ultimate edge with the last created line.
-    change_button_color(True)  # Animation effect.
-
-    if not is_finished and vertex_num > 0:
-        construct_graph(vertexes)
-        initialize()
-        is_finished = True
-    else:
-        clear_canvas()  # For replaying.
-        is_finished = False
-
-
 # For replaying the game.
 def clear_canvas():
     global vertex_num, \
@@ -487,6 +458,7 @@ def clear_canvas():
 # Find an arbitrary spanning tree.
 def initialize():
     print("step 1")
+
     global second_tree_edges, \
         remaining_edges, \
         count_i
@@ -656,8 +628,7 @@ def repeat_decrement():
     global first_tree_edges, \
         second_tree_edges, \
         last_redrawn_edge, \
-        count_i, count_k, \
-        event_msj
+        count_i, count_k
 
     if count_i < len(remaining_edges) and 0 < len(
             set(first_tree_edges).intersection(
@@ -683,7 +654,3 @@ def repeat_decrement():
             list(set(first_tree_edges).intersection(
                 second_tree_edges)),
             BLACK)))
-
-
-if __name__ == '__main__':
-    main_workflow()
