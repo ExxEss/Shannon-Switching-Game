@@ -37,6 +37,3 @@ if __name__ == '__main__':
     gui.title('Hamiltonian Circuits')
     bind()
     gui.mainloop()
-
-    # redraw_edge(first_circuit, JADE)
-    # redraw_edge(second_circuit, RED)

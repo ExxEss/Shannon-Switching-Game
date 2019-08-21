@@ -7,6 +7,7 @@ GRAY = '#AAAAAA'
 DARK_GRAY = '#666666'
 JADE = '#5DE1C0'
 RED = '#A21E3F'
+YELLOW = '#D79033'
 BLUE = '#0099CC'
 DARK = '#2F3640'
 BLACK = '#000000'
@@ -53,28 +54,28 @@ button_text = canvas.create_text(300, 530, fill=GRAY,
                                  font='Times 15 italic bold',
                                  text='Play')
 
-canvas.create_line(30, 30, 100, 30, fill=GRAY)
+canvas.create_line(30, 30, 100, 30, fill=BLACK)
 canvas.create_line(30, 50, 100, 50, fill=BLUE)
 canvas.create_line(30, 70, 100, 70, fill=JADE)
-canvas.create_line(30, 90, 100, 90, fill=RED)
-canvas.create_line(30, 110, 100, 110, fill=BLACK)
+canvas.create_line(30, 90, 100, 90, fill=YELLOW)
+canvas.create_line(30, 110, 100, 110, fill=RED)
 
-canvas.create_text(195, 30, fill=GRAY, font='Times 15 bold',
-                   text='Edge without being used')
+canvas.create_text(157, 30, fill=BLACK, font='Times 15 bold',
+                   text='Shared Edge')
 
-canvas.create_text(193, 50, fill=BLUE, font='Times 15 bold',
-                   text='Edge of an arbitrary ST')
+canvas.create_text(157, 50, fill=BLUE, font='Times 15 bold',
+                   text='The first HC')
 
-canvas.create_text(178, 70, fill=JADE, font='Times 15 bold',
-                   text='Edge of the first ST')
+canvas.create_text(155, 70, fill=JADE, font='Times 15 bold',
+                   text='The first ST')
 
-canvas.create_text(187, 90, fill=RED, font='Times 15 bold',
-                   text='Edge of the second ST')
+canvas.create_text(166, 90, fill=YELLOW, font='Times 15 bold',
+                   text='The second HC')
 
-canvas.create_text(191, 110, fill=BLACK, font='Times 15 bold',
-                   text='Edge belong to each ST')
+canvas.create_text(164, 110, fill=RED, font='Times 15 bold',
+                   text='The second ST')
 
-canvas.create_rectangle(20, 15, 290, 125)
+canvas.create_rectangle(20, 15, 225, 125)
 
 coordinates = {'x': 0, 'y': 0, 'x2': 0, 'y2': 0}
 

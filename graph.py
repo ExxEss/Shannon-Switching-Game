@@ -22,6 +22,12 @@ class Edge:
         self.associative_vertexes = []  # For graph thickness.
         self.associative_edges = []  # For graph thickness.
 
+    def __eq__(self, other):
+        return set(self.endpoints) == set(other.endpoints)
+
+    def __hash__(self):
+        return hash(id(self))
+
     def print(self):
         if self.endpoints:
             print((self.endpoints[0].index,
