@@ -9,8 +9,11 @@ to_exclude = ['create_vertex']
 for name in to_exclude:
     del globals()[name]
 
+# To determine the distance between an original
+# vertex and its' associative vertexes.
 THICKENING_RADIUS = 40
-TRANSLATION_DISTANCE = 200
+
+# Used for get the angle of each line.
 UNIT_VECTOR = (1, 0)
 
 thickening_vertexes = []
@@ -20,7 +23,12 @@ first_circuit = set()
 second_circuit = set()
 
 
-def create_vertexes():
+# If a vertex has N adjacent vertexes, then that vertexes will
+# be surrounded by N associative vertexes.
+# Also the angle between two edges which have same endpoints is
+# needed to put new created associative vertexes of that common
+# vertex properly.
+def create_associative_vertexes():
     reorder_neighbors()
 
     for vertex in vertexes:
@@ -67,6 +75,9 @@ def create_vertex(pos_x: int, pos_y: int) -> Vertex:
     return Vertex(st.vertex_num, circle, text)
 
 
+# A clockwise or anticlockwise order of the edges of a vertex is
+# necessary to ensure that an edge could have its' associative vertexes
+# correctly which is crucial to draw the circuits precisely.
 def reorder_neighbors():
     for vertex in vertexes:
         coord1 = canvas.coords(vertex.circle)
@@ -125,6 +136,10 @@ def create_edge_edges(vertexes_list: List[Vertex], edge: Edge):
                     edge.associative_edges.append(created_edge)
 
 
+# For generate a hamiltonian circuit, the most crucial operation is
+# symmetric difference between all vertexes' and edges' associative edges,
+# so exclusion of duplicated edges is needed by ensuring any pair of
+# associative vertexes only can have a shared edge.
 def find_created_edge(vertex1: Vertex, vertex2: Vertex, edge: Edge):
     def find_edge(edges_list):
         for _edge in edges_list:
@@ -148,6 +163,7 @@ def find_created_edge(vertex1: Vertex, vertex2: Vertex, edge: Edge):
         return find_edge(edges_list2)
 
 
+# To verify if two lines(edges) are intersected.
 def is_intersected(vertex1: Vertex, vertex2: Vertex, edge: Edge) -> bool:
     line1 = LineString([get_coord(vertex1), get_coord(vertex2)])
     line2 = LineString([get_coord(edge.endpoints[0]),
@@ -175,7 +191,7 @@ def get_coord(vertex: Vertex) -> (int, int):
 
 
 def graph_thickening():
-    create_vertexes()
+    create_associative_vertexes()
 
     for vertex in vertexes:
         create_vertex_edges(vertex.associative_vertexes, vertex)
